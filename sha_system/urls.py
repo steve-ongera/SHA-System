@@ -9,8 +9,8 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     
     # Dashboard
-    path('admin-dashbaord', views.admin_dashboard, name='admin_dashboard'),
-    path('dashboard/', views.admin_dashboard, name='dashboard'),
+    path('admin-dashbaord/', views.admin_dashboard, name='admin_dashboard'),
+    
     
     # Add more URLs as you build more views
     # path('members/', views.member_list, name='member_list'),
