@@ -1,0 +1,497 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Dashboard - SHA System{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Dashboard</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+        </nav>
+    </div>
+    <div>
+        <button class="btn btn-sha-primary">
+            <i class="bi bi-download me-2"></i>Export Report
+        </button>
+    </div>
+</div>
+
+<!-- Statistics Cards Row 1 -->
+<div class="row g-4 mb-4">
+    <!-- Total Members -->
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-icon primary">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <div class="stat-label">Total Members</div>
+            <div class="stat-value">{{ total_members|default:0 }}</div>
+            <div class="stat-change {% if member_growth >= 0 %}positive{% else %}negative{% endif %}">
+                <i class="bi bi-arrow-{% if member_growth >= 0 %}up{% else %}down{% endif %}"></i>
+                {{ member_growth|floatformat:1 }}% this month
+            </div>
+        </div>
+    </div>
+    
+    <!-- Total Contributions -->
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card success">
+            <div class="stat-icon success">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+            <div class="stat-label">Total Contributions</div>
+            <div class="stat-value">KES {{ contributions_this_month|floatformat:0|default:0 }}</div>
+            <div class="stat-change {% if contribution_growth >= 0 %}positive{% else %}negative{% endif %}">
+                <i class="bi bi-arrow-{% if contribution_growth >= 0 %}up{% else %}down{% endif %}"></i>
+                {{ contribution_growth|floatformat:1 }}% this month
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pending Claims -->
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card warning">
+            <div class="stat-icon warning">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div class="stat-label">Pending Claims</div>
+            <div class="stat-value">{{ pending_claims|default:0 }}</div>
+            <div class="stat-change">
+                <i class="bi bi-info-circle"></i>
+                Requires attention
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pending Payments -->
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card danger">
+            <div class="stat-icon danger">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <div class="stat-label">Pending Payments</div>
+            <div class="stat-value">{{ pending_payments|default:0 }}</div>
+            <div class="stat-change">
+                <i class="bi bi-currency-dollar"></i>
+                KES {{ pending_payment_amount|floatformat:0|default:0 }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards Row 2 -->
+<div class="row g-4 mb-4">
+    <!-- Total Claims -->
+    <div class="col-md-3">
+        <div class="stat-card info">
+            <div class="stat-icon info">
+                <i class="bi bi-file-earmark-medical"></i>
+            </div>
+            <div class="stat-label">Total Claims</div>
+            <div class="stat-value">{{ total_claims|default:0 }}</div>
+        </div>
+    </div>
+    
+    <!-- Healthcare Providers -->
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon primary">
+                <i class="bi bi-hospital"></i>
+            </div>
+            <div class="stat-label">Healthcare Providers</div>
+            <div class="stat-value">{{ total_providers|default:0 }}</div>
+        </div>
+    </div>
+    
+    <!-- Employers -->
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-icon success">
+                <i class="bi bi-building"></i>
+            </div>
+            <div class="stat-label">Active Employers</div>
+            <div class="stat-value">{{ total_employers|default:0 }}</div>
+        </div>
+    </div>
+    
+    <!-- Pre-authorizations -->
+    <div class="col-md-3">
+        <div class="stat-card warning">
+            <div class="stat-icon warning">
+                <i class="bi bi-shield-check"></i>
+            </div>
+            <div class="stat-label">Pending Pre-auth</div>
+            <div class="stat-value">{{ pending_preauth|default:0 }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-4 mb-4">
+    <!-- Contributions Trend -->
+    <div class="col-lg-8">
+        <div class="chart-container">
+            <h3 class="chart-title">
+                <i class="bi bi-graph-up me-2"></i>Contributions Trend (Last 6 Months)
+            </h3>
+            <canvas id="contributionsChart" height="80"></canvas>
+        </div>
+    </div>
+    
+    <!-- Claim Status Distribution -->
+    <div class="col-lg-4">
+        <div class="chart-container">
+            <h3 class="chart-title">
+                <i class="bi bi-pie-chart me-2"></i>Claims Distribution
+            </h3>
+            <canvas id="claimStatusChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Charts Row -->
+<div class="row g-4 mb-4">
+    <!-- Top Healthcare Providers -->
+    <div class="col-lg-6">
+        <div class="chart-container">
+            <h3 class="chart-title">
+                <i class="bi bi-hospital me-2"></i>Top Healthcare Providers
+            </h3>
+            <canvas id="providersChart" height="120"></canvas>
+        </div>
+    </div>
+    
+    <!-- Member Distribution by County -->
+    <div class="col-lg-6">
+        <div class="chart-container">
+            <h3 class="chart-title">
+                <i class="bi bi-geo-alt me-2"></i>Members by County
+            </h3>
+            <canvas id="countyChart" height="120"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activities -->
+<div class="row g-4">
+    <!-- Recent Claims -->
+    <div class="col-lg-6">
+        <div class="table-card">
+            <h3 class="card-title">
+                <i class="bi bi-clock-history me-2"></i>Recent Claims
+            </h3>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Claim #</th>
+                            <th>Member</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for claim in recent_claims %}
+                        <tr>
+                            <td><strong>{{ claim.claim_number }}</strong></td>
+                            <td>{{ claim.member.first_name }} {{ claim.member.last_name }}</td>
+                            <td>KES {{ claim.claimed_amount|floatformat:0 }}</td>
+                            <td>
+                                <span class="badge-status {% if claim.status == 'APPROVED' or claim.status == 'PAID' %}completed{% elif claim.status == 'SUBMITTED' or claim.status == 'UNDER_REVIEW' %}pending{% elif claim.status == 'REJECTED' %}rejected{% endif %}">
+                                    {{ claim.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ claim.submission_date|date:"d M, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No recent claims</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center mt-3">
+                <a href="#" class="btn btn-sha-primary btn-sm">View All Claims</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Members -->
+    <div class="col-lg-6">
+        <div class="table-card">
+            <h3 class="card-title">
+                <i class="bi bi-person-plus me-2"></i>Recent Registrations
+            </h3>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>SHA Number</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in recent_members %}
+                        <tr>
+                            <td><strong>{{ member.sha_number }}</strong></td>
+                            <td>{{ member.first_name }} {{ member.last_name }}</td>
+                            <td>{{ member.get_member_type_display }}</td>
+                            <td>
+                                <span class="badge-status {% if member.is_active %}active{% else %}rejected{% endif %}">
+                                    {% if member.is_active %}Active{% else %}Inactive{% endif %}
+                                </span>
+                            </td>
+                            <td>{{ member.registration_date|date:"d M, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No recent registrations</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center mt-3">
+                <a href="#" class="btn btn-sha-primary btn-sm">View All Members</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Payments -->
+<div class="row g-4 mt-1">
+    <div class="col-12">
+        <div class="table-card">
+            <h3 class="card-title">
+                <i class="bi bi-currency-exchange me-2"></i>Recent Payments
+            </h3>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Payment Ref</th>
+                            <th>Provider</th>
+                            <th>Claim #</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Payment Date</th>
+                            <th>Method</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in recent_payments %}
+                        <tr>
+                            <td><strong>{{ payment.payment_reference }}</strong></td>
+                            <td>{{ payment.healthcare_provider.facility_name|truncatewords:3 }}</td>
+                            <td>{{ payment.claim.claim_number }}</td>
+                            <td>KES {{ payment.payment_amount|floatformat:0 }}</td>
+                            <td>
+                                <span class="badge-status {% if payment.status == 'COMPLETED' %}completed{% elif payment.status == 'PENDING' or payment.status == 'PROCESSING' %}pending{% else %}rejected{% endif %}">
+                                    {{ payment.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ payment.payment_date|date:"d M, Y" }}</td>
+                            <td>{{ payment.payment_method }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">No recent payments</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center mt-3">
+                <a href="#" class="btn btn-sha-primary btn-sm">View All Payments</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // SHA Color Scheme
+    const shaColors = {
+        primary: '#00695c',
+        primaryLight: '#26a69a',
+        secondary: '#ff6f00',
+        success: '#66bb6a',
+        warning: '#ffa726',
+        danger: '#ef5350',
+        info: '#42a5f5'
+    };
+    
+    // Contributions Trend Chart
+    const contributionsCtx = document.getElementById('contributionsChart').getContext('2d');
+    const contributionsChart = new Chart(contributionsCtx, {
+        type: 'line',
+        data: {
+            labels: {{ contributions_trend.labels|safe }},
+            datasets: [{
+                label: 'Contributions (KES)',
+                data: {{ contributions_trend.data|safe }},
+                borderColor: shaColors.primary,
+                backgroundColor: 'rgba(0, 105, 92, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: shaColors.primary,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    titleFont: {
+                        size: 14
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            return 'KES ' + context.parsed.y.toLocaleString();
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return 'KES ' + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // Claim Status Distribution Chart
+    const claimStatusCtx = document.getElementById('claimStatusChart').getContext('2d');
+    const claimStatusChart = new Chart(claimStatusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ claim_status_data.labels|safe }},
+            datasets: [{
+                data: {{ claim_status_data.data|safe }},
+                backgroundColor: [
+                    shaColors.warning,
+                    shaColors.info,
+                    shaColors.success,
+                    shaColors.primary,
+                    shaColors.danger
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 15,
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12
+                }
+            }
+        }
+    });
+    
+    // Top Healthcare Providers Chart
+    const providersCtx = document.getElementById('providersChart').getContext('2d');
+    const providersChart = new Chart(providersCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ provider_stats.labels|safe }},
+            datasets: [{
+                label: 'Number of Claims',
+                data: {{ provider_stats.data|safe }},
+                backgroundColor: shaColors.primaryLight,
+                borderColor: shaColors.primary,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+    
+    // County Distribution Chart
+    const countyCtx = document.getElementById('countyChart').getContext('2d');
+    const countyChart = new Chart(countyCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ county_distribution.labels|safe }},
+            datasets: [{
+                label: 'Number of Members',
+                data: {{ county_distribution.data|safe }},
+                backgroundColor: shaColors.secondary,
+                borderColor: '#f57c00',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

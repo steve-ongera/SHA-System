@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('sha_system.urls')),  # SHA app urls
 ]
 
 if settings.DEBUG:
