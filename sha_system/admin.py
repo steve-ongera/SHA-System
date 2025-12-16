@@ -131,7 +131,7 @@ class MemberAdmin(admin.ModelAdmin):
     
     def employer_link(self, obj):
         if obj.employer:
-            url = reverse('admin:sha_employer_change', args=[obj.employer.id])
+            url = reverse('admin:sha_system_employer_change', args=[obj.employer.id])
             return format_html('<a href="{}">{}</a>', url, obj.employer.company_name)
         return '-'
     employer_link.short_description = 'Employer'
@@ -242,7 +242,7 @@ class ContributionAdmin(admin.ModelAdmin):
     actions = ['mark_as_completed', 'mark_as_failed']
     
     def member_link(self, obj):
-        url = reverse('admin:sha_member_change', args=[obj.member.id])
+        url = reverse('admin:sha_system_member_change', args=[obj.member.id])
         return format_html('<a href="{}">{}</a>', url, obj.member.sha_number)
     member_link.short_description = 'Member'
     
@@ -422,7 +422,7 @@ class PreAuthorizationAdmin(admin.ModelAdmin):
     actions = ['approve_preauthorization', 'reject_preauthorization']
     
     def member_link(self, obj):
-        url = reverse('admin:sha_member_change', args=[obj.member.id])
+        url = reverse('admin:sha_system_member_change', args=[obj.member.id])
         return format_html('<a href="{}">{}</a>', url, obj.member.sha_number)
     member_link.short_description = 'Member'
     
@@ -520,7 +520,7 @@ class ClaimAdmin(admin.ModelAdmin):
     actions = ['approve_claims', 'reject_claims', 'mark_under_review']
     
     def member_link(self, obj):
-        url = reverse('admin:sha_member_change', args=[obj.member.id])
+        url = reverse('admin:sha_system_member_change', args=[obj.member.id])
         return format_html('<a href="{}">{}</a>', url, obj.member.sha_number)
     member_link.short_description = 'Member'
     
@@ -633,7 +633,7 @@ class PaymentAdmin(admin.ModelAdmin):
     actions = ['mark_as_completed', 'mark_as_failed']
     
     def claim_link(self, obj):
-        url = reverse('admin:sha_claim_change', args=[obj.claim.id])
+        url = reverse('admin:sha_system_claim_change', args=[obj.claim.id])
         return format_html('<a href="{}">{}</a>', url, obj.claim.claim_number)
     claim_link.short_description = 'Claim'
     
@@ -699,7 +699,7 @@ class EligibilityCheckAdmin(admin.ModelAdmin):
     list_per_page = 50
     
     def member_link(self, obj):
-        url = reverse('admin:sha_member_change', args=[obj.member.id])
+        url = reverse('admin:sha_system_member_change', args=[obj.member.id])
         return format_html('<a href="{}">{}</a>', url, obj.member.sha_number)
     member_link.short_description = 'Member'
 
