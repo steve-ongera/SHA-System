@@ -13,82 +13,91 @@
     <style>
         :root {
             --sha-primary: #00695c;
-            --sha-primary-dark: #004d40;
+            --sha-primary-light: #26a69a;
             --sha-secondary: #ff6f00;
+            --sha-bg-light: #f5f7fa;
         }
         
         body {
-            background: linear-gradient(135deg, var(--sha-primary) 0%, var(--sha-primary-dark) 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
+            margin: 0;
         }
         
         .login-container {
-            max-width: 450px;
+            max-width: 420px;
             width: 100%;
-            padding: 20px;
         }
         
         .login-card {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
             overflow: hidden;
+            border: 1px solid #e0e0e0;
         }
         
         .login-header {
-            background: linear-gradient(135deg, var(--sha-primary) 0%, var(--sha-primary-dark) 100%);
-            padding: 40px 30px;
+            background: white;
+            padding: 40px 30px 20px;
             text-align: center;
-            color: white;
+            border-bottom: 1px solid #f0f0f0;
         }
         
         .login-header i {
-            font-size: 3.5rem;
+            font-size: 2.5rem;
+            color: var(--sha-primary);
             margin-bottom: 15px;
         }
         
         .login-header h2 {
             font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
         }
         
         .login-header p {
             font-size: 0.95rem;
-            opacity: 0.9;
+            color: #666;
             margin: 0;
         }
         
         .login-body {
-            padding: 40px 30px;
+            padding: 30px;
         }
         
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         
         .form-label {
-            font-weight: 600;
+            font-weight: 500;
             color: #333;
             margin-bottom: 8px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            display: block;
         }
         
         .form-control {
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px 12px;
             font-size: 0.95rem;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            width: 100%;
+            background: white;
         }
         
         .form-control:focus {
             border-color: var(--sha-primary);
-            box-shadow: 0 0 0 0.2rem rgba(0, 105, 92, 0.1);
+            box-shadow: 0 0 0 2px rgba(0, 105, 92, 0.1);
+            outline: none;
         }
         
         .input-group {
@@ -97,42 +106,75 @@
         
         .input-icon {
             position: absolute;
-            left: 15px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
             color: #999;
             z-index: 10;
+            font-size: 1.1rem;
         }
         
         .input-group .form-control {
-            padding-left: 45px;
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+        
+        /* Eye toggle button */
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: color 0.2s;
+        }
+        
+        .password-toggle:hover {
+            color: var(--sha-primary);
         }
         
         .btn-login {
-            background: linear-gradient(135deg, var(--sha-primary) 0%, var(--sha-primary-dark) 100%);
+            background-color: var(--sha-primary);
             color: white;
             border: none;
-            padding: 14px;
-            border-radius: 10px;
-            font-weight: 600;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: 500;
             font-size: 1rem;
             width: 100%;
-            transition: all 0.3s;
+            transition: background-color 0.2s;
+            cursor: pointer;
         }
         
         .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 105, 92, 0.3);
-            color: white;
+            background-color: var(--sha-primary-dark);
         }
         
         .form-check {
-            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            margin: 15px 0 20px;
+        }
+        
+        .form-check-input {
+            margin-right: 8px;
+            cursor: pointer;
         }
         
         .form-check-label {
             font-size: 0.9rem;
             color: #666;
+            cursor: pointer;
         }
         
         .forgot-password {
@@ -144,7 +186,7 @@
             color: var(--sha-primary);
             text-decoration: none;
             font-size: 0.9rem;
-            font-weight: 600;
+            font-weight: 500;
         }
         
         .forgot-password a:hover {
@@ -152,10 +194,23 @@
         }
         
         .alert {
-            border-radius: 10px;
-            border: none;
+            border-radius: 4px;
+            border: 1px solid transparent;
             padding: 12px 15px;
             margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .alert-danger {
+            background-color: #fff5f5;
+            border-color: #feb2b2;
+            color: #c53030;
+        }
+        
+        .alert-success {
+            background-color: #f0fff4;
+            border-color: #9ae6b4;
+            color: #276749;
         }
         
         .login-footer {
@@ -169,25 +224,45 @@
             margin: 0;
             font-size: 0.85rem;
             color: #666;
+            line-height: 1.5;
         }
         
         .login-footer a {
             color: var(--sha-primary);
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 500;
         }
         
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Focus states for accessibility */
+        .form-control:focus,
+        .btn-login:focus,
+        .password-toggle:focus {
+            outline: 2px solid var(--sha-primary);
+            outline-offset: 2px;
+        }
+        
+        /* Responsive */
         @media (max-width: 576px) {
+            body {
+                padding: 15px;
+                align-items: flex-start;
+                padding-top: 40px;
+            }
+            
             .login-container {
-                padding: 10px;
+                max-width: 100%;
             }
             
             .login-header {
-                padding: 30px 20px;
+                padding: 30px 20px 15px;
             }
             
             .login-header i {
-                font-size: 2.5rem;
+                font-size: 2rem;
             }
             
             .login-header h2 {
@@ -195,8 +270,34 @@
             }
             
             .login-body {
-                padding: 30px 20px;
+                padding: 20px;
             }
+            
+            .login-footer {
+                padding: 15px 20px;
+            }
+        }
+        
+        /* Animation for alerts */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        /* Custom checkbox styling */
+        .form-check-input:checked {
+            background-color: var(--sha-primary);
+            border-color: var(--sha-primary);
         }
     </style>
 </head>
@@ -204,7 +305,7 @@
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <i class="bi bi-heart-pulse-fill"></i>
+                <i class="bi bi-heart-pulse"></i>
                 <h2>SHA System</h2>
                 <p>Social Health Authority Management</p>
             </div>
@@ -212,7 +313,7 @@
             <div class="login-body">
                 {% if form.errors %}
                 <div class="alert alert-danger">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <i class="bi bi-exclamation-triangle me-2"></i>
                     Invalid username or password. Please try again.
                 </div>
                 {% endif %}
@@ -220,12 +321,17 @@
                 {% if messages %}
                     {% for message in messages %}
                     <div class="alert alert-{{ message.tags }}">
+                        {% if message.tags == 'success' %}
+                            <i class="bi bi-check-circle me-2"></i>
+                        {% elif message.tags == 'error' %}
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                        {% endif %}
                         {{ message }}
                     </div>
                     {% endfor %}
                 {% endif %}
                 
-                <form method="post">
+                <form method="post" id="loginForm">
                     {% csrf_token %}
                     
                     <div class="form-group">
@@ -238,7 +344,8 @@
                                    name="username" 
                                    placeholder="Enter your username"
                                    required 
-                                   autofocus>
+                                   autofocus
+                                   autocomplete="username">
                         </div>
                     </div>
                     
@@ -251,7 +358,11 @@
                                    id="password" 
                                    name="password" 
                                    placeholder="Enter your password"
-                                   required>
+                                   required
+                                   autocomplete="current-password">
+                            <button type="button" class="password-toggle" id="passwordToggle" aria-label="Toggle password visibility">
+                                <i class="bi bi-eye" id="passwordIcon"></i>
+                            </button>
                         </div>
                     </div>
                     
@@ -263,22 +374,121 @@
                     </div>
                     
                     <button type="submit" class="btn btn-login">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Login to Dashboard
                     </button>
                     
                     <div class="forgot-password">
-                        <a href="#">Forgot your password?</a>
+                        <a href="#" class="text-decoration-none">Forgot your password?</a>
                     </div>
                 </form>
             </div>
             
             <div class="login-footer">
-                <p>&copy; 2024 SHA System. Developed by <a href="mailto:steveongera001@gmail.com">Steve Ongera</a></p>
+                <p>&copy; 2024 SHA System. <br>Developed by <a href="mailto:steveongera001@gmail.com">Steve Ongera</a></p>
             </div>
         </div>
     </div>
     
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Password visibility toggle
+        const passwordToggle = document.getElementById('passwordToggle');
+        const passwordInput = document.getElementById('password');
+        const passwordIcon = document.getElementById('passwordIcon');
+        
+        passwordToggle.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Toggle icon
+            if (type === 'text') {
+                passwordIcon.className = 'bi bi-eye-slash';
+                this.setAttribute('aria-label', 'Hide password');
+            } else {
+                passwordIcon.className = 'bi bi-eye';
+                this.setAttribute('aria-label', 'Show password');
+            }
+        });
+        
+        // Form validation
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        
+        loginForm.addEventListener('submit', function(e) {
+            let isValid = true;
+            
+            // Clear previous error styles
+            [usernameInput, passwordInput].forEach(input => {
+                input.classList.remove('is-invalid');
+            });
+            
+            // Validate username
+            if (!usernameInput.value.trim()) {
+                usernameInput.classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            // Validate password
+            if (!passwordInput.value.trim()) {
+                passwordInput.classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+                
+                // Show error message if not already shown
+                if (!document.querySelector('.alert-danger')) {
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-danger';
+                    alertDiv.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Please fill in all required fields.';
+                    loginBody.insertBefore(alertDiv, loginForm);
+                }
+            }
+        });
+        
+        // Clear error styles on input
+        [usernameInput, passwordInput].forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('is-invalid');
+                // Remove any error alerts
+                const errorAlert = document.querySelector('.alert-danger');
+                if (errorAlert && errorAlert.textContent.includes('Please fill')) {
+                    errorAlert.remove();
+                }
+            });
+        });
+        
+        // Focus styles for inputs
+        const formControls = document.querySelectorAll('.form-control');
+        formControls.forEach(control => {
+            control.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            
+            control.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+        
+        // Auto-focus on username if empty
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!usernameInput.value) {
+                usernameInput.focus();
+            }
+        });
+        
+        // Enter key to submit form
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && (document.activeElement === usernameInput || document.activeElement === passwordInput)) {
+                if (usernameInput.value && passwordInput.value) {
+                    loginForm.submit();
+                }
+            }
+        });
+    </script>
 </body>
 </html>

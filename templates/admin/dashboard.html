@@ -3,6 +3,7 @@
 {% block title %}Dashboard - SHA System{% endblock %}
 
 {% block content %}
+
 <!-- Page Header -->
 <div class="page-header">
     <div>
@@ -26,7 +27,7 @@
     <!-- Total Members -->
     <div class="col-md-6 col-lg-3">
         <div class="stat-card">
-            <div class="stat-icon primary">
+            <div class="stat-icon">
                 <i class="bi bi-people-fill"></i>
             </div>
             <div class="stat-label">Total Members</div>
@@ -40,8 +41,8 @@
     
     <!-- Total Contributions -->
     <div class="col-md-6 col-lg-3">
-        <div class="stat-card success">
-            <div class="stat-icon success">
+        <div class="stat-card">
+            <div class="stat-icon">
                 <i class="bi bi-cash-stack"></i>
             </div>
             <div class="stat-label">Total Contributions</div>
@@ -55,8 +56,8 @@
     
     <!-- Pending Claims -->
     <div class="col-md-6 col-lg-3">
-        <div class="stat-card warning">
-            <div class="stat-icon warning">
+        <div class="stat-card">
+            <div class="stat-icon">
                 <i class="bi bi-hourglass-split"></i>
             </div>
             <div class="stat-label">Pending Claims</div>
@@ -70,8 +71,8 @@
     
     <!-- Pending Payments -->
     <div class="col-md-6 col-lg-3">
-        <div class="stat-card danger">
-            <div class="stat-icon danger">
+        <div class="stat-card">
+            <div class="stat-icon">
                 <i class="bi bi-exclamation-triangle-fill"></i>
             </div>
             <div class="stat-label">Pending Payments</div>
@@ -88,8 +89,8 @@
 <div class="row g-4 mb-4">
     <!-- Total Claims -->
     <div class="col-md-3">
-        <div class="stat-card info">
-            <div class="stat-icon info">
+        <div class="stat-card">
+            <div class="stat-icon">
                 <i class="bi bi-file-earmark-medical"></i>
             </div>
             <div class="stat-label">Total Claims</div>
@@ -100,7 +101,7 @@
     <!-- Healthcare Providers -->
     <div class="col-md-3">
         <div class="stat-card">
-            <div class="stat-icon primary">
+            <div class="stat-icon">
                 <i class="bi bi-hospital"></i>
             </div>
             <div class="stat-label">Healthcare Providers</div>
@@ -111,7 +112,7 @@
     <!-- Employers -->
     <div class="col-md-3">
         <div class="stat-card">
-            <div class="stat-icon success">
+            <div class="stat-icon">
                 <i class="bi bi-building"></i>
             </div>
             <div class="stat-label">Active Employers</div>
@@ -121,8 +122,8 @@
     
     <!-- Pre-authorizations -->
     <div class="col-md-3">
-        <div class="stat-card warning">
-            <div class="stat-icon warning">
+        <div class="stat-card">
+            <div class="stat-icon">
                 <i class="bi bi-shield-check"></i>
             </div>
             <div class="stat-label">Pending Pre-auth</div>
@@ -343,15 +344,15 @@
                 label: 'Contributions (KES)',
                 data: {{ contributions_trend.data|safe }},
                 borderColor: shaColors.primary,
-                backgroundColor: 'rgba(0, 105, 92, 0.1)',
-                borderWidth: 3,
-                tension: 0.4,
+                backgroundColor: 'rgba(0, 105, 92, 0.05)',
+                borderWidth: 2,
+                tension: 0.3,
                 fill: true,
                 pointBackgroundColor: shaColors.primary,
                 pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                pointRadius: 5,
-                pointHoverRadius: 7
+                pointBorderWidth: 1,
+                pointRadius: 4,
+                pointHoverRadius: 6
             }]
         },
         options: {
@@ -362,13 +363,17 @@
                     display: false
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    padding: 12,
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    titleColor: '#333',
+                    bodyColor: '#666',
+                    borderColor: '#ddd',
+                    borderWidth: 1,
+                    padding: 10,
                     titleFont: {
-                        size: 14
+                        size: 12
                     },
                     bodyFont: {
-                        size: 13
+                        size: 12
                     },
                     callbacks: {
                         label: function(context) {
@@ -380,10 +385,18 @@
             scales: {
                 y: {
                     beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
                     ticks: {
                         callback: function(value) {
                             return 'KES ' + value.toLocaleString();
                         }
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.03)'
                     }
                 }
             }
@@ -405,7 +418,7 @@
                     shaColors.primary,
                     shaColors.danger
                 ],
-                borderWidth: 2,
+                borderWidth: 1,
                 borderColor: '#fff'
             }]
         },
@@ -416,15 +429,20 @@
                 legend: {
                     position: 'bottom',
                     labels: {
-                        padding: 15,
+                        padding: 10,
                         font: {
-                            size: 12
-                        }
+                            size: 11
+                        },
+                        usePointStyle: true,
+                        pointStyle: 'circle'
                     }
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    padding: 12
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    titleColor: '#333',
+                    bodyColor: '#666',
+                    borderColor: '#ddd',
+                    borderWidth: 1
                 }
             }
         }
@@ -441,7 +459,7 @@
                 data: {{ provider_stats.data|safe }},
                 backgroundColor: shaColors.primaryLight,
                 borderColor: shaColors.primary,
-                borderWidth: 1
+                borderWidth: 0
             }]
         },
         options: {
@@ -455,8 +473,16 @@
             scales: {
                 y: {
                     beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
                     ticks: {
                         stepSize: 1
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
                     }
                 }
             }
@@ -474,7 +500,7 @@
                 data: {{ county_distribution.data|safe }},
                 backgroundColor: shaColors.secondary,
                 borderColor: '#f57c00',
-                borderWidth: 1
+                borderWidth: 0
             }]
         },
         options: {
@@ -488,7 +514,15 @@
             },
             scales: {
                 x: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                y: {
+                    grid: {
+                        display: false
+                    }
                 }
             }
         }
